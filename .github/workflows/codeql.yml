@@ -2,7 +2,7 @@ name: "CodeQL SAST Scan"
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   codeql-analysis:
@@ -40,4 +40,4 @@ jobs:
           mv codeql-sast-scan.csv $GITHUB_WORKSPACE/
           git add codeql-sast-scan.csv
           git commit -m "CodeQL SAST Scan Report - $(date +'%Y-%m-%d')"
-          git push origin main
+          git push origin master
