@@ -22,7 +22,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: 'javascript,python,java,csharp,go'  # Modify based on your repo's languages
+          languages: 'javascript,python'  # Modify based on your repo's languages
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
