@@ -5,8 +5,6 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
-  schedule:
-    - cron: '0 0 * * 1'
 
 jobs:
   codeql-analysis:
@@ -29,9 +27,6 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           output: codeql-results.sarif
-
-      - name: Ensure File Change
-        run: echo "$(date)" >> codeql-results.sarif
 
       - name: Commit and Push Results
         run: |
