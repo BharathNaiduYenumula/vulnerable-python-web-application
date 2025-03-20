@@ -3,6 +3,8 @@ name: "CodeQL SAST Scan"
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   codeql-analysis:
@@ -20,24 +22,19 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: 'javascript,python'  # Modify based on your repo's languages
+          languages: 'javascript,python,java,csharp,go'  # Modify based on your repo's languages
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          output: results.sarif
-
-      - name: Convert SARIF to CSV
-        run: |
-          echo "alert,severity,message,location" > codeql-sast-scan.csv
-          jq -r '.runs[].results[] | "\(.ruleId),\(.level),\(.message.text),\(.locations[].physicalLocation.artifactLocation.uri):\(.locations[].physicalLocation.region.startLine)"' results.sarif >> codeql-sast-scan.csv
+          output: codeql-results.sarif
 
       - name: Commit and Push Results
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git checkout main
-          mv codeql-sast-scan.csv $GITHUB_WORKSPACE/
-          git add codeql-sast-scan.csv
+          git checkout master
+          mv codeql-results.sarif $GITHUB_WORKSPACE/
+          git add codeql-results.sarif
           git commit -m "CodeQL SAST Scan Report - $(date +'%Y-%m-%d')"
           git push origin master
