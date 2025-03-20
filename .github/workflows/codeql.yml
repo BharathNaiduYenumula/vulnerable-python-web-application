@@ -5,15 +5,16 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  schedule:
+    - cron: '0 0 * * 1'
 
 jobs:
   codeql-analysis:
-    name: Analyze Code for Vulnerabilities
     runs-on: ubuntu-latest
     permissions:
       security-events: write
       actions: read
-      contents: write  # Needed to commit results back to the repo
+      contents: write  
 
     steps:
       - name: Checkout repository
@@ -22,19 +23,21 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: 'javascript,python'  # Modify based on your repo's languages
+          languages: 'javascript,python'
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           output: codeql-results.sarif
 
+      - name: Ensure File Change
+        run: echo "$(date)" >> codeql-results.sarif
+
       - name: Commit and Push Results
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git checkout master
-          mv codeql-results.sarif $GITHUB_WORKSPACE/
           git add codeql-results.sarif
-          git commit -m "CodeQL SAST Scan Report - $(date +'%Y-%m-%d')"
-          git push origin master
+          git commit -m "CodeQL SAST Scan Report - $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git push origin master --force
