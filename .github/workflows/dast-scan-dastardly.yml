@@ -3,7 +3,7 @@ name: Dastardly Scan Workflow
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   dastardly-scan:
@@ -28,4 +28,4 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add dastardly-report.xml
           git commit -m "Add Dastardly scan report"
-          git push origin main
+          git push origin master
