@@ -1,41 +1,31 @@
-name: Dastardly Scan
+name: Dastardly Scan Workflow
 
 on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
-  workflow_dispatch:
 
 jobs:
-  dastardly_scan:
+  dastardly-scan:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Set up Docker
-        run: |
-          docker build -t vulnerable-app .
-          docker run -d -p 8000:8000 --name vuln-container vulnerable-app
+      # Step 2: Run Dastardly Scan Action
+      - name: Run Dastardly Scan Action
+        uses: PortSwigger/dastardly-github-action@main
+        with:
+          target-url: https://ginandjuice.shop/about'
+          output-filename: dastardly-report.xml
 
-      - name: Wait for Application to be Ready
+      # Step 3: Commit and push the report back to the repository
+      - name: Commit and Push Report
         run: |
-          echo "Waiting for application to start..."
-          sleep 10  # Adjust this based on application startup time
-
-      - name: Run Dastardly Scan
-        run: |
-          docker run --rm -v $(pwd):/dastardly-output dastardly scan http://localhost:8000 > dastardly-report.html
-
-      - name: Commit and Push Dastardly Report
-        run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
-          git add dastardly-report.html
-          git commit -m 'Add Dastardly scan report'
-          git pull --rebase origin master
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add dastardly-report.xml
+          git commit -m "Add Dastardly scan report"
           git push origin master
