@@ -14,18 +14,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Run Dastardly Scan Action
+      # Step 2: Run Dastardly Scan
       - name: Run Dastardly Scan Action
         uses: PortSwigger/dastardly-github-action@main
         with:
           target-url: 'https://test-iam.clopay.com/Account/Login?ReturnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fresponse_type%3Dcode%26client_id%3D78c97bbe8be4493cb2d94bb2e87dace7%26state%3DVTRMaGktcV9RcWtpUXhqUi5yZEtIcnlvfnRoTVN5T0NzckFtV1VTfmZycUNs%26redirect_uri%3Dhttps%253A%252F%252Ftest-cca.clopay.com%252Fsignin-oidc%26scope%3Dopenid%2520profile%26code_challenge%3DJ5jtUIQYNHT4zu9Qf5Lf73vS0jCDblF_5FMfl40PBZ8%26code_challenge_method%3DS256%26nonce%3DVTRMaGktcV9RcWtpUXhqUi5yZEtIcnlvfnRoTVN5T0NzckFtV1VTfmZycUNs'
           output-filename: dastardly-report.xml
 
-      # Step 3: Commit and push the report back to the repository
+      # Step 3 (Option 1): Commit and push the report back to the repository
       - name: Commit and Push Report
         run: |
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Ensure the latest changes are pulled before committing
+          git pull --rebase origin master
+          
           git add dastardly-report.xml
           git commit -m "Add Dastardly scan report"
+          
+          # Push the changes
           git push origin master
+        continue-on-error: true  # Prevent failure if no changes need to be committed
+
+      # Step 3 (Option 2): Upload the report as an artifact instead of committing
+      - name: Upload Dastardly Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dastardly-report
+          path: dastardly-report.xml
