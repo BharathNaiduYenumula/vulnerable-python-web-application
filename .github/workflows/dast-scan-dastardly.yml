@@ -18,7 +18,7 @@ jobs:
       - name: Run Dastardly Scan Action
         uses: PortSwigger/dastardly-github-action@main
         with:
-          target-url: https://ginandjuice.shop/about'
+          target-url: 'https://app-sneui-qa.azurewebsites.net/'
           output-filename: dastardly-report.xml
 
       # Step 3: Commit and push the report back to the repository
