@@ -1,4 +1,4 @@
-name: Dastardly Scan Workflow
+name: Dastardly Scan with Docker
 
 on:
   push:
@@ -14,14 +14,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Run Dastardly Scan Action
-      - name: Run Dastardly Scan Action
-        uses: PortSwigger/dastardly-github-action@main
-        with:
-          target-url: 'https://juice-shop.herokuapp.com/'
-          output-filename: dastardly-report.xml
+      # Step 2: Set up Docker and build the application
+      - name: Build and run the vulnerable app in Docker
+        run: |
+          docker build -t vulnerable-app .
+          docker run -d -p 5000:5000 --name vuln-app vulnerable-app
 
-      # Step 3: Commit and push the report back to the repository
+      # Step 3: Run Dastardly Scan
+      - name: Run Dastardly Scan
+        run: |
+          docker run --rm dastardly scan http://localhost:5000 > dastardly-report.xml
+
+      # Step 4: Commit and push the report back to the repository
       - name: Commit and Push Report
         run: |
           git config --local user.name "github-actions[bot]"
