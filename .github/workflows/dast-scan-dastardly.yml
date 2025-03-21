@@ -1,0 +1,31 @@
+name: Dastardly Scan Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  dastardly-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Run Dastardly Scan Action
+      - name: Run Dastardly Scan Action
+        uses: PortSwigger/dastardly-github-action@main
+        with:
+          target-url: 'https://juice-shop.herokuapp.com/'
+          output-filename: dastardly-report.xml
+
+      # Step 3: Commit and push the report back to the repository
+      - name: Commit and Push Report
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add dastardly-report.xml
+          git commit -m "Add Dastardly scan report"
+          git push origin main
