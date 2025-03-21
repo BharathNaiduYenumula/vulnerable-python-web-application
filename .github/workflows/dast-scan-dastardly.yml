@@ -18,7 +18,7 @@ jobs:
       - name: Run Dastardly Scan Action
         uses: PortSwigger/dastardly-github-action@main
         with:
-          target-url: 'https://app-sneui-qa.azurewebsites.net/'
+          target-url: 'https://test-iam.clopay.com/Account/Login?ReturnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fresponse_type%3Dcode%26client_id%3D78c97bbe8be4493cb2d94bb2e87dace7%26state%3DVTRMaGktcV9RcWtpUXhqUi5yZEtIcnlvfnRoTVN5T0NzckFtV1VTfmZycUNs%26redirect_uri%3Dhttps%253A%252F%252Ftest-cca.clopay.com%252Fsignin-oidc%26scope%3Dopenid%2520profile%26code_challenge%3DJ5jtUIQYNHT4zu9Qf5Lf73vS0jCDblF_5FMfl40PBZ8%26code_challenge_method%3DS256%26nonce%3DVTRMaGktcV9RcWtpUXhqUi5yZEtIcnlvfnRoTVN5T0NzckFtV1VTfmZycUNs'
           output-filename: dastardly-report.xml
 
       # Step 3: Commit and push the report back to the repository
