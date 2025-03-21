@@ -37,9 +37,4 @@ jobs:
           git push origin master
         continue-on-error: true  # Prevent failure if no changes need to be committed
 
-      # Step 3 (Option 2): Upload the report as an artifact instead of committing
-      - name: Upload Dastardly Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: dastardly-report
-          path: dastardly-report.xml
+     
